@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{% block title %}Pneumonia{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}" />
+    <script>
+      window.SUPABASE_URL = "{{ SUPABASE_URL }}";
+      window.SUPABASE_ANON_KEY = "{{ SUPABASE_ANON_KEY }}";
+      window.SUPABASE_KEY = window.SUPABASE_ANON_KEY;
+    </script>
+    {% block head %}{% endblock %}
+  </head>
+<style>    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 20;
+    font-family: var(--font-primary);
+    font-variant-ligatures: no-common-ligatures;
+    background-color: var(--transparent);
+    width: 100vw;
+    min-height: 60px;
+    height: auto;
+    display: flex
+;
+    align-items: center;
+    -webkit-backdrop-filter: blur(22px);
+    backdrop-filter: blur(22px);</style>
+ 
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+
+  <footer>
+  </footer>
+</html>

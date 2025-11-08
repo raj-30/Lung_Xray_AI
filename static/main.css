@@ -1,0 +1,268 @@
+﻿/* Pneumonia Detection App Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Dashboard layout */
+.layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar { background: #2C3E50; color: #ecf0f1; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.brand { font-weight: 800; letter-spacing: .5px; }
+.nav-btn { background: transparent; color: #ecf0f1; border: 1px solid rgba(255,255,255,.2); padding: .5rem .75rem; border-radius: 8px; cursor: pointer; margin-bottom: .5rem; text-align: left; }
+.nav-btn.active { background: #18BC9C; color: #fff; border-color: #18BC9C; }
+.btn-logout { background: #e74c3c; color: #fff; border: 0; padding: .6rem .8rem; border-radius: 8px; cursor: pointer; }
+.content { padding: 2rem; }
+.section.hidden { display: none; }
+.btn { background: #2C3E50; color: #fff; border: 0; padding: .6rem 1rem; border-radius: 8px; cursor: pointer; }
+.prediction { margin-top: 1rem; font-size: 1.25rem; font-weight: 700; }
+.history-list { display: flex; flex-direction: column; gap: .5rem; }
+.history-item { display: flex; justify-content: space-between; padding: .5rem .75rem; background: #fff; border: 1px solid #ecf0f1; border-radius: 8px; }
+
+/* Modal */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; }
+.modal.hidden { display: none; }
+.modal-content { background: #fff; padding: 1.25rem; border-radius: 12px; width: 90%; max-width: 480px; position: relative; }
+.modal-close { position: absolute; right: .5rem; top: .5rem; border: 0; background: transparent; font-size: 1.5rem; cursor: pointer; }
+.preview { width: 100%; max-height: 320px; object-fit: contain; margin: .75rem 0; border-radius: 8px; border: 1px solid #ecf0f1; }
+
+/* Chat */
+.chat { background: #fff; border: 1px solid #ecf0f1; border-radius: 12px; height: 360px; overflow: auto; padding: .75rem; }
+.chat-form { display: flex; gap: .5rem; margin-top: .75rem; }
+.chat-form input { flex: 1; padding: .6rem .75rem; border: 1px solid #ced4da; border-radius: 8px; }
+.chat-msg { padding: .5rem .75rem; border-radius: 12px; margin-bottom: .5rem; max-width: 80%; }
+.chat-msg.user { background: #e8f4fd; margin-left: auto; }
+.chat-msg.assistant { background: #d5f4e6; margin-right: auto; }
+
+.main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title h3 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.panel {
+    margin-bottom: 2rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.upload-box {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border: 3px dashed #3498db;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-box:hover {
+    border-color: #2980b9;
+    background-color: #e8f4fd;
+    transform: translateY(-2px);
+}
+
+.upload-box.dragover {
+    border-color: #27ae60;
+    background-color: #d5f4e6;
+}
+
+#upload-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    text-align: center;
+    pointer-events: none;
+}
+
+#image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 7px;
+}
+
+.button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#image-box {
+    margin-top: 2rem;
+    text-align: center;
+    min-height: 300px;
+    position: relative;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 2rem;
+    border: 2px solid #ecf0f1;
+}
+
+#image-display {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+#pred-result {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    z-index: 10;
+    pointer-events: none;
+}
+
+#pred-result.pneumonia {
+    color: #e74c3c;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+#pred-result.normal {
+    color: #27ae60;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+#loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#spinner {
+    stroke: #3498db;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 88;
+    stroke-dashoffset: 88;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        stroke-dashoffset: 88;
+        transform: rotate(0deg);
+    }
+    50% {
+        stroke-dashoffset: 22;
+        transform: rotate(180deg);
+    }
+    100% {
+        stroke-dashoffset: 88;
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main {
+        padding: 1rem;
+        margin: 0;
+    }
+    
+    .title h3 {
+        font-size: 2rem;
+    }
+    
+    .upload-box {
+        height: 150px;
+    }
+    
+    #upload-caption {
+        font-size: 1rem;
+    }
+    
+    .button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    #pred-result {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title h3 {
+        font-size: 1.5rem;
+    }
+    
+    .upload-box {
+        height: 120px;
+    }
+    
+    #upload-caption {
+        font-size: 0.9rem;
+    }
+    
+    .button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}

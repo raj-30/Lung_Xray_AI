@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in - AI Pneumonia Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* === Internal Auth Page Styles === */
+    :root {
+      --medical-blue: #2b7de9;
+      --medical-teal: #16a2b8;
+      --text-primary: #2c3e50;
+      --text-secondary: #6c757d;
+      --white: #ffffff;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: radial-gradient(circle at top left, #e9f4ff, #f8fcff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .auth-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+    }
+
+    .btn-google {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 50px;
+      font-size: 1rem;
+      padding: 0.9rem 1.2rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      color: #333;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-google:hover {
+      box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-icon {
+      background-color: #fff;
+      color: #4285f4;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 1.1rem;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ddd;
+    }
+
+    #authStatus {
+      margin-top: 1.5rem;
+      min-height: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--medical-blue);
+    }
+
+    .helper-links {
+      margin-top: 2rem;
+    }
+
+    .helper-links .link {
+      color: var(--medical-blue);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .helper-links .link:hover {
+      color: var(--medical-teal);
+    }
+  </style>
+</head>
+<body>
+
+  <main id="content" class="auth-wrap" aria-labelledby="auth-title">
+    <section class="auth-card">
+      <h1 id="auth-title" class="auth-title">Sign in to Pneumonia AI</h1>
+
+      <!-- Google Login -->
+      <button id="google-login-btn" class="btn btn-google btn-full" type="button" aria-label="Continue with Google">
+        <span class="btn-icon" aria-hidden="true">G</span>
+        <span>Continue with Google</span>
+      </button>
+
+      <!-- Hidden Email/Password Form (kept for compatibility) -->
+      <form id="login-form" class="form" style="display:none;" novalidate>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        <button type="submit">Sign in</button>
+      </form>
+
+      <p id="authStatus" role="status" aria-live="polite"></p>
+
+      <div class="helper-links">
+        <a class="link" href="/">← Back to home</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Inject environment variables (in real Flask setup, these come from base.html)
+    window.SUPABASE_URL = "https://lgiexxdluggjwaisycxn.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxnaWV4eGRsdWdnandhaXN5Y3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NTc1OTksImV4cCI6MjA3MzQzMzU5OX0.qUs1X_oDjf5QNlIqgIFtbzI6oubDAzBOZPnEaFf-71w";
+
+    // === Full Supabase Auth Logic ===
+    (function(){
+      const supabaseUrl = window.SUPABASE_URL || localStorage.getItem('sb_url') || '';
+      const supabaseAnonKey = window.SUPABASE_ANON_KEY || localStorage.getItem('sb_key') || '';
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.warn("Supabase URL or Anon Key not set.");
+        document.getElementById('authStatus').textContent = "Configuration missing.";
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+      script.onload = () => init();
+      document.head.appendChild(script);
+
+      function init(){
+        if (!window.supabase) return;
+        const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        const googleBtn = document.getElementById('google-login-btn');
+        const emailForm = document.getElementById('login-form');
+        const statusEl = document.getElementById('authStatus');
+        const pageHasAuthUI = !!(googleBtn || emailForm);
+
+        async function persistSession(session){
+          const token = session?.access_token || session?.accessToken || session?.provider_token;
+          if (!token) return;
+          await fetch('/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ access_token: token })
+          });
+        }
+
+        async function handleGoogle(){
+          try {
+            const { error } = await client.auth.signInWithOAuth({
+              provider: 'google',
+              options: { redirectTo: window.location.origin + '/auth' }
+            });
+            if (error) throw error;
+          } catch(e){
+            statusEl.textContent = e.message || "Google sign-in failed";
+          }
+        }
+
+        async function handleEmailPassword(e){
+          e.preventDefault();
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value;
+          try {
+            let { data, error } = await client.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            const session = data.session || (await client.auth.getSession()).data.session;
+            if (session) {
+              await persistSession(session);
+              window.location.href = '/dashboard';
+            }
+          } catch(e){
+            statusEl.textContent = e.message || "Authentication failed";
+          }
+        }
+
+        // Detect auth change and auto-redirect
+        client.auth.onAuthStateChange(async (_, session) => {
+          if (session) {
+            await persistSession(session);
+            window.location.href = '/dashboard';
+          }
+        });
+
+        // Check session on load
+        (async ()=>{
+          try {
+            const { data } = await client.auth.getSession();
+            const session = data?.session;
+            if (session) {
+              await persistSession(session);
+              window.location.href = '/dashboard';
+            }
+          } catch(e){
+            console.warn("Session check failed:", e);
+          }
+        })();
+
+        // Button and form actions
+        if (googleBtn) googleBtn.addEventListener('click', handleGoogle);
+        if (emailForm) emailForm.addEventListener('submit', handleEmailPassword);
+
+        window.__supabase = client;
+      }
+    })();
+  </script>
+
+</body>
+</html>

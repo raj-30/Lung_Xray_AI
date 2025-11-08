@@ -1,0 +1,880 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Pneumonia Detection – Hospital Facility</title>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #1677ff;
+        --accent: #69b1ff;
+        --bg: #f8fafc;
+        --text: #1f1f1f;
+        --muted: #8c8c8c;
+        --radius: 12px;
+        --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        --transition: all 0.25s ease-in-out;
+        --ant-primary: #1677ff;
+        --ant-primary-hover: #4096ff;
+        --ant-primary-active: #0958d9;
+        --ant-gradient: linear-gradient(90deg, #1677ff 0%, #69b1ff 100%);
+        --ant-bg-light: #ffffff;
+        --ant-bg-dark: #001529;
+        --ant-text-primary: #1f1f1f;
+        --ant-text-secondary: #8c8c8c;
+        --ant-text-light: rgba(255, 255, 255, 0.85);
+        --ant-border: #d9d9d9;
+        --ant-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        --ant-shadow-hover: 0 4px 12px rgba(22, 119, 255, 0.15);
+        --ant-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: var(--transition);
+      }
+      a:hover {
+        color: var(--primary);
+      }
+
+      /* Navbar ------------------------------------------------*/
+      header.navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: #fff;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 2rem;
+      }
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      nav ul {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        list-style: none;
+      }
+      nav ul li a {
+        font-weight: 500;
+        color: var(--text);
+      }
+      nav ul li a:hover {
+        color: var(--primary);
+      }
+      .nav-right button {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+      }
+      .nav-right button:hover {
+        background: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      /* Hero ------------------------------------------------*/
+      section.hero {
+        padding: 8rem 2rem 6rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e6f0ff 0%, #f8fafc 100%);
+      }
+      .hero-content {
+        flex: 1 1 420px;
+        max-width: 520px;
+      }
+      .hero-content h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      .hero-content p {
+        font-size: 1.125rem;
+        color: var(--muted);
+        margin-bottom: 2rem;
+      }
+      .hero-content .btn {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .hero-content .btn:hover {
+        transform: translateY(-2px);
+      }
+      .hero-visual {
+        flex: 1 1 400px;
+        max-width: 500px;
+        text-align: center;
+      }
+      .hero-visual img {
+        width: 100%;
+        max-width: 420px;
+        border-radius: var(--radius);
+      }
+
+      /* Section titles --------------------------------------*/
+      .section {
+        padding: 5rem 2rem;
+      }
+      .section h2 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      .section p.subtext {
+        text-align: center;
+        color: var(--muted);
+        max-width: 700px;
+        margin: 0 auto 3rem;
+      }
+
+      /* Features --------------------------------------------*/
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .feature-card {
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 2rem;
+        text-align: center;
+        transition: var(--transition);
+      }
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+      }
+      .feature-card i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 0.75rem;
+      }
+      .feature-card h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .feature-card p {
+        color: var(--muted);
+      }
+
+      /* How it works ----------------------------------------*/
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .step {
+        background: #fff;
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        position: relative;
+      }
+      .step-number {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: #fff;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.1rem;
+      }
+
+      /* CTA --------------------------------------------------*/
+      .cta {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        text-align: center;
+        padding: 4rem 2rem;
+        border-radius: var(--radius);
+        max-width: 900px;
+        margin: 0 auto 6rem;
+        box-shadow: var(--shadow);
+      }
+      .cta h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .cta button {
+        background: #fff;
+        color: var(--primary);
+        border: none;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .cta button:hover {
+        background: #f0f5ff;
+        transform: translateY(-2px);
+      }
+
+      /* ============================================
+     Ant Design-Inspired Footer
+     ============================================ */
+
+      .app-footer {
+        background: var(--cant-bg-light);
+        border-top: 1px solid var(--ant-border);
+        margin-top: auto;
+        padding: 0;
+        transition: var(--ant-transition);
+      }
+
+      .footer-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 48px 24px 24px;
+      }
+
+      /* Footer Top Section */
+      .footer-top {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--ant-border);
+      }
+
+      /* Intro Section */
+      .footer-intro {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .footer-intro h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--ant-text-primary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        letter-spacing: -0.02em;
+      }
+
+      .footer-intro p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--ant-text-secondary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      /* Footer Links Section */
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .footer-links h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ant-text-primary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .footer-links ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .footer-links li {
+        margin: 0;
+      }
+
+      .footer-links a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ant-text-secondary);
+        text-decoration: none;
+        font-size: 14px;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        transition: var(--ant-transition);
+        position: relative;
+        padding: 4px 0;
+      }
+
+      .footer-links a::before {
+        content: "📖";
+        font-size: 12px;
+        opacity: 0.6;
+        transition: var(--ant-transition);
+      }
+
+      .footer-links a:hover {
+        color: var(--ant-primary);
+        transform: translateX(4px);
+      }
+
+      .footer-links a:hover::before {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+
+      /* Social/Connect Section */
+      .footer-social {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .footer-social h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ant-text-primary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      .social-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .social-links a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ant-text-secondary);
+        text-decoration: none;
+        font-size: 14px;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        transition: var(--ant-transition);
+        padding: 4px 0;
+      }
+
+      .social-links a i {
+        width: 18px;
+        text-align: center;
+        font-size: 16px;
+        transition: var(--ant-transition);
+      }
+
+      .social-links a:hover {
+        color: var(--ant-primary);
+        transform: translateX(4px);
+      }
+
+      .social-links a:hover i {
+        transform: scale(1.1);
+      }
+
+      .footer-email {
+        color: var(--ant-text-secondary);
+        font-size: 14px;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        margin-top: 8px;
+      }
+
+      .footer-email a {
+        color: var(--ant-primary);
+        text-decoration: none;
+        transition: var(--ant-transition);
+      }
+
+      .footer-email a:hover {
+        text-decoration: underline;
+      }
+
+      /* Footer Bottom Bar */
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .footer-bottom p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--ant-text-secondary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      .footer-bottom .footer-brand {
+        color: var(--ant-text-primary);
+        font-weight: 500;
+      }
+
+      .footer-bottom .footer-powered {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Responsive tweaks -----------------------------------*/
+      @media (max-width: 768px) {
+        header.navbar {
+          padding: 0.75rem 1rem;
+        }
+        .hero {
+          flex-direction: column;
+          text-align: center;
+        }
+        .hero-content {
+          margin-bottom: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-left">
+        <div class="logo">🫁</div>
+        <div><strong>AI Pneumonia</strong></div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#footer-faq">Learn</a></li>
+        </ul>
+      </nav>
+      <div class="nav-right">
+        <button onclick="location.href='/auth'">Sign in with Google</button>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Early Detection. Smarter Diagnosis.</h1>
+        <p>
+          Empowering clinicians and researchers with AI-powered X-ray analysis
+          for pneumonia detection.
+        </p>
+        <button class="btn" onclick="location.href='/auth'">
+          Sign in with Google
+        </button>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="/static/12812288_5040930.svg"
+          alt="AI medical illustration"
+        />
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <h2>Powerful Features</h2>
+      <p class="subtext">
+        AI Pneumonia Detection delivers accuracy, speed, and security for modern
+        healthcare.
+      </p>
+      <div class="features">
+        <div class="feature-card">
+          <i>🤖</i>
+          <h3>AI-Driven Accuracy</h3>
+          <p>
+            Clinically validated model trained on thousands of X-rays for
+            reliable results.
+          </p>
+        </div>
+        <div class="feature-card">
+          <i>⚡</i>
+          <h3>Instant Results</h3>
+          <p>
+            Upload and analyze images in seconds — helping clinicians act
+            faster.
+          </p>
+        </div>
+        <div class="feature-card">
+          <i>🔒</i>
+          <h3>Secure & Private</h3>
+          <p>End-to-end encryption and HIPAA-compliant Supabase integration.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section" style="background: #fff">
+      <h2>How It Works</h2>
+      <p class="subtext">
+        A simple, intuitive workflow for busy healthcare professionals.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Sign In</h3>
+          <p>Secure Google authentication — no extra registration.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Upload</h3>
+          <p>Select a chest X-ray image (JPG/PNG).</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>AI Analysis</h3>
+          <p>Our deep-learning model predicts Normal or Pneumonia.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Review Results</h3>
+          <p>View results and get insights via Gemini Assistant.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Join the Future of Medical Imaging</h2>
+      <p style="margin-bottom: 1.5rem">
+        Experience fast, secure, AI-driven pneumonia detection.
+      </p>
+      <button onclick="location.href='/auth'">Get Started →</button>
+    </section>
+
+    <!-- Ant Design-Inspired Footer -->
+    <footer class="app-footer" role="contentinfo" aria-label="Site footer">
+      <div class="footer-container">
+        <!-- Footer Top Section -->
+        <div class="footer-top">
+          <!-- Intro Section -->
+          <div id="footer-faq" class="footer-intro">
+            <h3>Better Know Pneumonia</h3>
+            <p>
+              Explore reliable resources and articles to understand, prevent,
+              and manage pneumonia effectively.
+            </p>
+          </div>
+
+          <!-- Understanding Pneumonia Links -->
+          <div class="footer-links">
+            <h4>
+              <span>🧬</span>
+              Understanding Pneumonia
+            </h4>
+            <ul>
+              <li>
+                <a
+                  href="https://my.clevelandclinic.org/health/diseases/4471-pneumonia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="What Is Pneumonia?"
+                >
+                  What Is Pneumonia?
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.webmd.com/lung/pneumonia-types"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Types of Pneumonia"
+                >
+                  Types of Pneumonia
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.mayoclinic.org/diseases-conditions/pneumonia/symptoms-causes/syc-20354204"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="How Pneumonia Affects the Lungs"
+                >
+                  How Pneumonia Affects the Lungs
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Prevention & Care Links -->
+          <div class="footer-links">
+            <h4>
+              <span>⚕️</span>
+              Prevention & Care
+            </h4>
+            <ul>
+              <li>
+                <a
+                  href="https://www.nhs.uk/vaccinations/pneumococcal-vaccine/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Pneumonia Vaccination & Prevention"
+                >
+                  Vaccination & Prevention
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.lung.org/lung-health-diseases/lung-disease-lookup/pneumonia/treatment-and-recovery"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Home Care Guidelines"
+                >
+                  Home Care Guidelines
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.news-medical.net/health/Walking-Pneumonia-When-to-See-a-Doctor.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="When to See a Doctor"
+                >
+                  When to See a Doctor
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Research & Data Links -->
+          <div class="footer-links">
+            <h4>
+              <span>📊</span>
+              Research & Data
+            </h4>
+            <ul>
+              <li>
+                <a
+                  href="https://www.who.int/news-room/fact-sheets/detail/pneumonia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WHO Pneumonia Factsheet"
+                >
+                  WHO Pneumonia Factsheet
+                </a>
+              </li>
+              <li>
+                <a
+                  href="Global Pneumonia Statistics"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Global Pneumonia Statistics"
+                >
+                  Global Pneumonia Statistics
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9221818/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="AI in Pneumonia Detection"
+                >
+                  AI in Pneumonia Detection
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Social/Connect Section -->
+          <div class="footer-social">
+            <h4>Connect</h4>
+            <div class="social-links">
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
+                <i class="fab fa-linkedin"></i>
+                <span>LinkedIn</span>
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+              >
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+              </a>
+              <a href="/hospital" aria-label="Hospital Website">
+                <i class="fas fa-hospital"></i>
+                <span>Hospital Website</span>
+              </a>
+            </div>
+            <div class="footer-email">
+              Contact:
+              <a href="mailto:ai-facility@hospital.com"
+                >ai-facility@hospital.com</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Bottom Bar -->
+        <div class="footer-bottom">
+          <p class="footer-brand">
+            © <span id="footerYear"></span> AI Pneumonia Detection Facility
+          </p>
+          <p class="footer-powered">
+            • Designed with care by Raj gajjar & Sadhu dhwanika
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Redirect logged-in users straight to dashboard
+      if (document.cookie.includes("sb-access-token=")) {
+        window.location.href = "/dashboard";
+      }
+
+      // Smooth scroll for in-page anchors
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document
+            .querySelector(this.getAttribute("href"))
+            .scrollIntoView({ behavior: "smooth" });
+        });
+      });
+
+      // ============================================
+      // Footer Functionality
+      // ============================================
+      (function () {
+        "use strict";
+
+        // Update copyright year
+        function initCopyrightYear() {
+          const yearElement = document.getElementById("footerYear");
+          if (yearElement) {
+            yearElement.textContent = new Date().getFullYear();
+          }
+        }
+
+        // Back to Top Button
+        function initBackToTop() {
+          const backToTopBtn = document.getElementById("backToTop");
+          if (!backToTopBtn) return;
+
+          function toggleBackToTop() {
+            const scrollY = window.scrollY || window.pageYOffset;
+            if (scrollY > 300) {
+              backToTopBtn.classList.add("visible");
+            } else {
+              backToTopBtn.classList.remove("visible");
+            }
+          }
+
+          // Show/hide button based on scroll position
+          window.addEventListener("scroll", toggleBackToTop);
+          toggleBackToTop(); // Check initial position
+
+          // Scroll to top on click
+          backToTopBtn.addEventListener("click", () => {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          });
+        }
+
+        // Initialize footer features
+        function initFooter() {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initFooter);
+            return;
+          }
+
+          initCopyrightYear();
+          initBackToTop();
+
+          console.log("[Footer] Ant Design footer initialized");
+        }
+
+        // Start initialization
+        initFooter();
+      })();
+    </script>
+  </body>
+</html>

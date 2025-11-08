@@ -1,0 +1,1619 @@
+{% extends "base.html" %} {% block title %}Dashboard - AI Pneumonia Detection{%
+endblock %} {% block head %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
+<style>
+  :root {
+    --primary: #2b7de9;
+    --accent: #16a2b8;
+    --danger: #ef4444;
+    --ok: #10b981;
+    --bg: #f6f9fb;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --text: #0f172a;
+    --radius: 12px;
+    --shadow-sm: 0 6px 20px rgba(15, 23, 42, 0.06);
+    --transition: 240ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+
+  /* Layout */
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial;
+    margin: 0;
+  }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ============================================
+     Ant Design-Inspired Navigation Bar
+     ============================================ */
+  
+  /* CSS Variables for Theme Support */
+  :root {
+    --ant-primary: #1677ff;
+    --ant-primary-hover: #4096ff;
+    --ant-primary-active: #0958d9;
+    --ant-gradient: linear-gradient(90deg, #1677ff 0%, #69b1ff 100%);
+    --ant-bg-light: #ffffff;
+    --ant-bg-dark: #001529;
+    --ant-text-primary: #1f1f1f;
+    --ant-text-secondary: #8c8c8c;
+    --ant-text-light: rgba(255, 255, 255, 0.85);
+    --ant-border: #d9d9d9;
+    --ant-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --ant-shadow-hover: 0 4px 12px rgba(22, 119, 255, 0.15);
+    --ant-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-theme="dark"] {
+    --ant-bg-light: #001529;
+    --ant-text-primary: rgba(255, 255, 255, 0.85);
+    --ant-text-secondary: rgba(255, 255, 255, 0.65);
+    --ant-border: rgba(255, 255, 255, 0.12);
+  }
+
+  [data-theme="dark"] body {
+    background: #0a1629;
+  }
+
+  [data-theme="dark"] .content {
+    background: #0a1629;
+  }
+
+  /* Top Navigation Bar - Ant Design Style */
+  .navbar {
+    background: var(--ant-bg-light);
+    border-bottom: 1px solid var(--ant-border);
+    box-shadow: var(--ant-shadow);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: var(--ant-transition);
+  }
+
+  .navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 32px;
+  }
+
+  /* Brand/Logo Section */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--ant-text-primary);
+    font-weight: 600;
+    font-size: 18px;
+    transition: var(--ant-transition);
+  }
+
+  .brand:hover {
+    opacity: 0.8;
+  }
+
+  .brand .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ant-gradient);
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2);
+    transition: var(--ant-transition);
+  }
+
+  .brand .logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3);
+  }
+
+  .brand .label {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  /* Navigation Menu */
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .nav-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    height: 40px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ant-text-secondary);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: var(--ant-transition);
+    white-space: nowrap;
+  }
+
+  .nav-btn i {
+    font-size: 16px;
+    width: 16px;
+    text-align: center;
+    transition: var(--ant-transition);
+  }
+
+  /* Hover State */
+  .nav-btn:hover {
+    color: var(--ant-primary);
+    background: rgba(22, 119, 255, 0.06);
+  }
+
+  .nav-btn:hover i {
+    transform: scale(1.1);
+  }
+
+  /* Active State */
+  .nav-btn.active {
+    color: var(--ant-primary);
+    background: rgba(22, 119, 255, 0.1);
+    font-weight: 600;
+  }
+
+  /* Active Indicator Bar (Ant Design style) */
+  .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: var(--ant-primary);
+    border-radius: 2px 2px 0 0;
+    animation: slideIn 200ms ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 24px;
+      opacity: 1;
+    }
+  }
+
+  /* Right Section */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Theme Toggle */
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--ant-border);
+    background: transparent;
+    color: var(--ant-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--ant-transition);
+  }
+
+  .theme-toggle:hover {
+    color: var(--ant-primary);
+    border-color: var(--ant-primary);
+    background: rgba(22, 119, 255, 0.06);
+  }
+
+  /* Logout Button - Ant Design Style */
+  .btn-logout {
+    padding: 8px 16px;
+    height: 40px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ant-text-secondary);
+    border: 1px solid var(--ant-border);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    transition: var(--ant-transition);
+    white-space: nowrap;
+  }
+
+  .btn-logout:hover {
+    color: #ff4d4f;
+    border-color: #ff4d4f;
+    background: rgba(255, 77, 79, 0.06);
+  }
+
+  .btn-logout i {
+    font-size: 16px;
+  }
+
+  /* Hamburger Menu (Mobile) */
+  .hamburger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--ant-border);
+    background: transparent;
+    color: var(--ant-text-primary);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: var(--ant-transition);
+  }
+
+  .hamburger:hover {
+    background: rgba(22, 119, 255, 0.06);
+    border-color: var(--ant-primary);
+  }
+
+  .hamburger span {
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: var(--ant-transition);
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Mobile Drawer */
+  .mobile-drawer {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--ant-bg-light);
+    border-top: 1px solid var(--ant-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--ant-transition);
+    z-index: 999;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-drawer {
+      top: 56px;
+    }
+  }
+
+  .mobile-drawer.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-drawer .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .mobile-drawer .nav-item {
+    width: 100%;
+    height: auto;
+  }
+
+  .mobile-drawer .nav-btn {
+    width: 100%;
+    justify-content: flex-start;
+    height: 48px;
+    padding: 12px 16px;
+  }
+
+  .mobile-drawer .navbar-right {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--ant-border);
+  }
+
+  .mobile-drawer .btn-logout {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .navbar-container {
+      padding: 0 16px;
+      height: 56px;
+    }
+
+    .brand .label {
+      display: none;
+    }
+
+    .nav-menu {
+      display: none;
+    }
+
+    .navbar-right {
+      gap: 8px;
+    }
+
+    .btn-logout span {
+      display: none;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .navbar-container {
+      padding: 0 12px;
+    }
+
+    .brand .logo {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+  }
+
+  /* ============================================
+     Ant Design-Inspired Footer
+     ============================================ */
+  
+  .app-footer {
+    background: var(--ant-bg-light);
+    border-top: 1px solid var(--ant-border);
+    margin-top: auto;
+    padding: 0;
+    transition: var(--ant-transition);
+  }
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 24px 24px;
+  }
+
+  /* Footer Top Section */
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--ant-border);
+  }
+
+  /* Intro Section */
+  .footer-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-intro h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ant-text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .footer-intro p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ant-text-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* Footer Links Section */
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-links h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ant-text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links li {
+    margin: 0;
+  }
+
+  .footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ant-text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: var(--ant-transition);
+    position: relative;
+    padding: 4px 0;
+  }
+
+  .footer-links a::before {
+    content: '📖';
+    font-size: 12px;
+    opacity: 0.6;
+    transition: var(--ant-transition);
+  }
+
+  .footer-links a:hover {
+    color: var(--ant-primary);
+    transform: translateX(4px);
+  }
+
+  .footer-links a:hover::before {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* Social/Connect Section */
+  .footer-social {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-social h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ant-text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .social-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ant-text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: var(--ant-transition);
+    padding: 4px 0;
+  }
+
+  .social-links a i {
+    width: 18px;
+    text-align: center;
+    font-size: 16px;
+    transition: var(--ant-transition);
+  }
+
+  .social-links a:hover {
+    color: var(--ant-primary);
+    transform: translateX(4px);
+  }
+
+  .social-links a:hover i {
+    transform: scale(1.1);
+  }
+
+  .footer-email {
+    color: var(--ant-text-secondary);
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin-top: 8px;
+  }
+
+  .footer-email a {
+    color: var(--ant-primary);
+    text-decoration: none;
+    transition: var(--ant-transition);
+  }
+
+  .footer-email a:hover {
+    text-decoration: underline;
+  }
+
+  /* Footer Bottom Bar */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ant-text-secondary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .footer-bottom .footer-brand {
+    color: var(--ant-text-primary);
+    font-weight: 500;
+  }
+
+  .footer-bottom .footer-powered {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Back to Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ant-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--ant-shadow);
+    transition: var(--ant-transition);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 100;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .back-to-top:hover {
+    background: var(--ant-primary-hover);
+    transform: translateY(-4px);
+    box-shadow: var(--ant-shadow-hover);
+  }
+
+  .back-to-top i {
+    font-size: 18px;
+  }
+
+  /* Responsive Footer */
+  @media (max-width: 1024px) {
+    .footer-top {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .footer-intro {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .footer-container {
+      padding: 32px 16px 16px;
+    }
+
+    .footer-top {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .footer-intro {
+      grid-column: 1;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .back-to-top {
+      bottom: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-container {
+      padding: 24px 12px 12px;
+    }
+
+    .footer-top {
+      gap: 24px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+    }
+
+    .footer-intro h3 {
+      font-size: 18px;
+    }
+
+    .footer-intro p {
+      font-size: 13px;
+    }
+  }
+
+  /* Content */
+  .content {
+    padding: 2rem;
+    overflow: auto;
+    flex: 1;
+  }
+  .content header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .subtle {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* Grid for main card */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem;
+    transition: box-shadow var(--transition);
+  }
+  .card:hover {
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+  }
+
+  /* Upload box */
+  .upload-box {
+    border-radius: 12px;
+    border: 2px dashed rgba(16, 24, 40, 0.06);
+    padding: 1.25rem;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    background: linear-gradient(180deg, #fff, #fbfdff);
+    cursor: pointer;
+  }
+  .upload-box.drag-over {
+    border-color: rgba(43, 125, 233, 0.7);
+    box-shadow: 0 6px 24px rgba(43, 125, 233, 0.06);
+    transform: translateY(-2px);
+  }
+  .upload-placeholder {
+    text-align: center;
+    color: var(--muted);
+  }
+  .upload-placeholder h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .upload-placeholder p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .upload-box input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .preview-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  #preview {
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+  }
+
+  /* Buttons */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .btn {
+    padding: 0.7rem 1rem;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: var(--transition);
+    background: var(--primary);
+    color: #fff;
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .btn.secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid rgba(43, 125, 233, 0.12);
+  }
+
+  .btn[disabled],
+  .btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .predict-area {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .loading {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+    color: var(--primary);
+  }
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Prediction result styling */
+  #predictionResult {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    color: var(--text);
+    background: linear-gradient(180deg, #fff, #fbfdff);
+    box-shadow: var(--shadow-sm);
+  }
+  #predictionResult .badge {
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 800;
+    color: white;
+    display: inline-block;
+  }
+  #predictionResult.normal {
+    border-left: 4px solid var(--ok);
+  }
+  #predictionResult.pneumonia {
+    border-left: 4px solid var(--danger);
+  }
+  .badge.normal {
+    background: var(--ok);
+  }
+  .badge.pneumonia {
+    background: var(--danger);
+  }
+
+  /* Right column (history & assistant) */
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-height: 420px;
+    overflow: auto;
+    padding-right: 6px;
+  }
+  .history-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #fff, #fcfeff);
+    box-shadow: var(--shadow-sm);
+  }
+  .history-thumb {
+    width: 64px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f2f6f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .history-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .history-meta .time {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .history-meta .result {
+    font-weight: 700;
+  }
+
+  /* Chat */
+  .chat {
+    background: linear-gradient(180deg, #fff, #fbfdff);
+    border-radius: 10px;
+    padding: 1rem;
+    min-height: 220px;
+    max-height: 420px;
+    overflow: auto;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .chat-msg {
+    max-width: 75%;
+    padding: 0.6rem 0.85rem;
+    border-radius: 12px;
+    line-height: 1.2;
+  }
+  .chat-msg.assistant {
+    align-self: flex-start;
+    background: #f3f6fb;
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+  .chat-msg.user {
+    align-self: flex-end;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  /* Markdown styling for assistant messages */
+  .chat-msg.assistant h1,
+  .chat-msg.assistant h2,
+  .chat-msg.assistant h3,
+  .chat-msg.assistant h4 {
+    margin: 0.5rem 0 0.3rem 0;
+    font-weight: 600;
+  }
+  .chat-msg.assistant h1 { font-size: 1.3rem; }
+  .chat-msg.assistant h2 { font-size: 1.2rem; }
+  .chat-msg.assistant h3 { font-size: 1.1rem; }
+  .chat-msg.assistant p {
+    margin: 0.4rem 0;
+    line-height: 1.5;
+  }
+  .chat-msg.assistant ul,
+  .chat-msg.assistant ol {
+    margin: 0.4rem 0;
+    padding-left: 1.5rem;
+  }
+  .chat-msg.assistant li {
+    margin: 0.2rem 0;
+    line-height: 1.4;
+  }
+  .chat-msg.assistant code {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 0.15rem 0.3rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+  }
+  .chat-msg.assistant pre {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 0.6rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+  }
+  .chat-msg.assistant pre code {
+    background: none;
+    padding: 0;
+  }
+  .chat-msg.assistant blockquote {
+    border-left: 3px solid rgba(0, 0, 0, 0.2);
+    padding-left: 0.8rem;
+    margin: 0.5rem 0;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  .chat-msg.assistant strong {
+    font-weight: 600;
+  }
+  .chat-msg.assistant em {
+    font-style: italic;
+  }
+  .chat-msg.assistant a {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+  .chat-msg.assistant table {
+    border-collapse: collapse;
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+  .chat-msg.assistant th,
+  .chat-msg.assistant td {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.3rem 0.5rem;
+    text-align: left;
+  }
+  .chat-msg.assistant th {
+    background: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+  }
+  .chat-form {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  .chat-form input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #e6eef7;
+  }
+  .chat-form button {
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    background: rgba(15, 23, 42, 0.95);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(12px);
+    opacity: 0;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 980px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .navbar {
+      padding: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-menu {
+      order: 3;
+      width: 100%;
+      justify-content: flex-start;
+      margin-top: 0.5rem;
+    }
+    .right-col {
+      order: 3;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .navbar {
+      padding: 0.75rem;
+    }
+    .brand .label {
+      display: none;
+    }
+    .nav-btn span {
+      display: none;
+    }
+    .nav-btn {
+      padding: 0.6rem 1rem;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="layout" role="application" aria-label="Pneumonia AI Dashboard">
+  <!-- Ant Design-Inspired Top Navigation Bar -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar-container">
+      <!-- Left: Brand/Logo -->
+      <a href="/" class="brand" aria-label="AI Pneumonia Detection">
+        <div class="logo">AI</div>
+        <div class="label">Pneumonia AI</div>
+      </a>
+
+      <!-- Center: Navigation Menu -->
+      <div class="nav-menu" role="navigation" aria-label="Sections">
+        <div class="nav-item">
+          <button
+            class="nav-btn"
+            data-section="home"
+            type="button"
+            aria-pressed="false"
+            onclick="window.location.href='/'"
+          >
+            <i class="fas fa-home"></i><span>Home</span>
+          </button>
+        </div>
+        <div class="nav-item">
+          <button
+            class="nav-btn active"
+            data-section="upload"
+            type="button"
+            aria-pressed="true"
+          >
+            <i class="fas fa-upload"></i><span>Dashboard</span>
+          </button>
+        </div>
+        <div class="nav-item">
+        </div>
+      </div>
+
+      <!-- Right: Actions -->
+      <div class="navbar-right">
+
+
+        <!-- Logout Button -->
+        <form id="logoutForm">
+          <button type="button" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </form>
+
+      
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <header>
+      <div>
+        <div class="page-title">Run a Prediction</div>
+        <div class="subtle">
+          Upload a chest X-ray or view history and use the AI assistant.
+        </div>
+      </div>
+      <div class="actions" aria-hidden="true">
+        <!-- reserved for future actions -->
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Upload Card -->
+      <section
+        id="section-upload"
+        class="card section"
+        aria-labelledby="upload-heading"
+      >
+        <h3 id="upload-heading" style="margin: 0 0 0.5rem 0">Upload X-ray</h3>
+        <p class="subtle" style="margin: 0 0 1rem 0">
+          Supported formats: JPG, PNG. Max recommended resolution: 2048×2048.
+        </p>
+
+        <div id="uploadBox" class="upload-box" role="button" tabindex="0">
+          <input id="fileInput" type="file" accept="image/*" />
+          <div class="upload-placeholder">
+            <i class="fas fa-cloud-upload-alt fa-3x" style="color: var(--primary);"></i>
+            <h3>Upload X-ray Image</h3>
+            <p>Drag and drop or click to select</p>
+            <small>Supported formats: JPG, PNG</small>
+          </div>
+
+          <div id="previewContainer" class="preview-container" style="display: none;">
+            <img id="preview" alt="preview" />
+          </div>
+        </div>
+
+        <div id="actionButtons" class="actions" style="display: none; margin-top: 1rem; justify-content: center;">
+          <button id="predictBtn" class="btn" type="button" disabled>
+            <i class="fas fa-robot"></i> Analyze Image
+          </button>
+          <button id="openUpload" class="btn secondary" type="button">
+            <i class="fas fa-upload"></i> Change
+          </button>
+        </div>
+
+        <div id="predictionResult" aria-live="polite" style="margin-top: 1rem">
+          <!-- Prediction text/ badges will appear here (observed by UI script) -->
+          <span class="subtle"
+            >No prediction yet. Upload an image to begin.</span
+          >
+        </div>
+      </section>
+
+      <!-- RIGHT: History + Assistant stacked -->
+      <aside class="right-col">
+        <div class="card">
+          <h4 style="margin: 0 0 0.6rem 0">Recent History</h4>
+          <div
+            id="historyList"
+            class="history-list"
+            role="list"
+            aria-live="polite"
+          >
+            <div class="subtle">Loading recent predictions…</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 style="margin: 0 0 0.6rem 0">AI Assistant</h4>
+          <div
+            id="chat"
+            class="chat"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
+            <div class="chat-msg assistant">
+              Hi — I can explain predictions and suggest next steps. Ask me
+              anything about your scan.
+            </div>
+          </div>
+
+          <form id="chatForm" class="chat-form" aria-label="Ask assistant">
+            <input
+              id="chatInput"
+              type="text"
+              placeholder="Ask Gemini about your report..."
+              aria-label="Message"
+              autocomplete="off"
+            />
+            <button type="submit" class="btn" aria-label="Send message">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div
+  id="toast"
+  class="toast"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  style="display: none"
+></div>
+
+<!-- Ant Design-Inspired Footer -->
+<footer class="app-footer" role="contentinfo" aria-label="Site footer">
+  <div class="footer-container">
+    <!-- Footer Top Section -->
+    <div class="footer-top">
+      <!-- Intro Section -->
+      <div class="footer-intro">
+        <h3>Better Know Pneumonia</h3>
+        <p>
+          Explore reliable resources and articles to understand, prevent, and manage pneumonia effectively.
+        </p>
+      </div>
+
+       <!-- Understanding Pneumonia Links -->
+       <div class="footer-links">
+         <h4>
+           <span>🧬</span>
+           Understanding Pneumonia
+         </h4>
+         <ul>
+           <li>
+             <a href="https://my.clevelandclinic.org/health/diseases/4471-pneumonia" target="_blank" rel="noopener noreferrer" aria-label="What Is Pneumonia?">
+               What Is Pneumonia?
+             </a>
+           </li>
+           <li>
+             <a href="https://www.webmd.com/lung/pneumonia-types" target="_blank" rel="noopener noreferrer" aria-label="Types of Pneumonia">
+               Types of Pneumonia
+             </a>
+           </li>
+           <li>
+             <a href="https://www.mayoclinic.org/diseases-conditions/pneumonia/symptoms-causes/syc-20354204" target="_blank" rel="noopener noreferrer" aria-label="How Pneumonia Affects the Lungs">
+               How Pneumonia Affects the Lungs
+             </a>
+           </li>
+         </ul>
+       </div>
+
+       <!-- Prevention & Care Links -->
+       <div class="footer-links">
+         <h4>
+           <span>⚕️</span>
+           Prevention & Care
+         </h4>
+         <ul>
+           <li>
+             <a href="https://www.nhs.uk/vaccinations/pneumococcal-vaccine/" target="_blank" rel="noopener noreferrer" aria-label="Pneumonia Vaccination & Prevention">
+               Vaccination & Prevention
+             </a>
+           </li>
+           <li>
+             <a href="https://www.lung.org/lung-health-diseases/lung-disease-lookup/pneumonia/treatment-and-recovery" target="_blank" rel="noopener noreferrer" aria-label="Home Care Guidelines">
+               Home Care Guidelines
+             </a>
+           </li>
+           <li>
+             <a href="https://www.news-medical.net/health/Walking-Pneumonia-When-to-See-a-Doctor.aspx" target="_blank" rel="noopener noreferrer" aria-label="When to See a Doctor">
+               When to See a Doctor
+             </a>
+           </li>
+         </ul>
+       </div>
+
+       <!-- Research & Data Links -->
+       <div class="footer-links">
+         <h4>
+           <span>📊</span>
+           Research & Data
+         </h4>
+         <ul>
+           <li>
+             <a href="https://www.who.int/news-room/fact-sheets/detail/pneumonia" target="_blank" rel="noopener noreferrer" aria-label="WHO Pneumonia Factsheet">
+               WHO Pneumonia Factsheet
+             </a>
+           </li>
+           <li>
+             <a href="Global Pneumonia Statistics" target="_blank" rel="noopener noreferrer" aria-label="Global Pneumonia Statistics">
+               Global Pneumonia Statistics
+             </a>
+           </li>
+           <li>
+             <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9221818/" target="_blank" rel="noopener noreferrer" aria-label="AI in Pneumonia Detection">
+               AI in Pneumonia Detection
+             </a>
+           </li>
+         </ul>
+       </div>
+
+      <!-- Social/Connect Section -->
+      <div class="footer-social">
+        <h4>Connect</h4>
+        <div class="social-links">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+            <span>LinkedIn</span>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter</span>
+          </a>
+          <a href="/hospital" aria-label="Hospital Website">
+            <i class="fas fa-hospital"></i>
+            <span>Hospital Website</span>
+          </a>
+        </div>
+        <div class="footer-email">
+          Contact: <a href="mailto:ai-facility@hospital.com">ai-facility@hospital.com</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bottom">
+      <p class="footer-brand">
+        © <span id="footerYear"></span> AI Pneumonia Detection Facility
+      </p>
+      <p class="footer-powered">
+        • Designed with care by Raj gajjar & Sadhu dhwanika
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button
+  class="back-to-top"
+  id="backToTop"
+  type="button"
+  aria-label="Back to top"
+  title="Back to top"
+>
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Markdown Library -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+<!-- Dashboard JavaScript -->
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<!-- Ant Design Navbar JavaScript -->
+<script>
+  (function() {
+    'use strict';
+
+    
+    // ============================================
+    // Active State Management
+    // ============================================
+    function initActiveStates() {
+      const navBtns = document.querySelectorAll('.nav-btn[data-section]');
+      
+      navBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const section = this.getAttribute('data-section');
+          
+          // Update all buttons
+          document.querySelectorAll('.nav-btn[data-section]').forEach(b => {
+            if (b.getAttribute('data-section') === section) {
+              b.classList.add('active');
+              b.setAttribute('aria-pressed', 'true');
+            } else {
+              b.classList.remove('active');
+              b.setAttribute('aria-pressed', 'false');
+            }
+          });
+        });
+      });
+    }
+
+    // ============================================
+    // Logout Form Handlers
+    // ============================================
+    function initLogoutForms() {
+      const logoutForm = document.getElementById('logoutForm');
+      const logoutFormMobile = document.getElementById('logoutFormMobile');
+      const logoutBtns = document.querySelectorAll('.btn-logout');
+
+      logoutBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          // Use existing logout logic from dashboard.js
+          if (window.showToast) {
+            window.showToast('Signing out...');
+          }
+
+          try {
+            if (window.__supabase) {
+              try {
+                await window.__supabase.auth.signOut();
+              } catch (err) {
+                console.warn('[Logout] Supabase signOut error:', err);
+              }
+            }
+
+            try {
+              await fetch('/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+              });
+            } catch (err) {
+              console.warn('[Logout] Backend logout error:', err);
+            }
+
+            window.location.href = '/';
+          } catch (error) {
+            console.error('[Logout] Unexpected error:', error);
+            window.location.href = '/';
+          }
+        });
+      });
+    }
+
+    // ============================================
+    // Initialize All Features
+    // ============================================
+    function initNavbar() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNavbar);
+        return;
+      }
+
+      initActiveStates();
+      initLogoutForms();
+
+      console.log('[Navbar] Ant Design navbar initialized');
+    }
+
+    // Start initialization
+    initNavbar();
+  })();
+
+  // ============================================
+  // Footer Functionality
+  // ============================================
+  (function() {
+    'use strict';
+
+    // Update copyright year
+    function initCopyrightYear() {
+      const yearElement = document.getElementById('footerYear');
+      if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+      }
+    }
+
+    // Back to Top Button
+    function initBackToTop() {
+      const backToTopBtn = document.getElementById('backToTop');
+      if (!backToTopBtn) return;
+
+      function toggleBackToTop() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        if (scrollY > 300) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      }
+
+      // Show/hide button based on scroll position
+      window.addEventListener('scroll', toggleBackToTop);
+      toggleBackToTop(); // Check initial position
+
+      // Scroll to top on click
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // Initialize footer features
+    function initFooter() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFooter);
+        return;
+      }
+
+      initCopyrightYear();
+      initBackToTop();
+
+      console.log('[Footer] Ant Design footer initialized');
+    }
+
+    // Start initialization
+    initFooter();
+  })();
+</script>
+{% endblock %}
