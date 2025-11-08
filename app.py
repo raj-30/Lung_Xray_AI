@@ -17,7 +17,7 @@ load_dotenv(dotenv_path=Path(__file__).resolve().parent / '.env')
 # -------------------------------------------------------------------
 # Flask app setup
 # -------------------------------------------------------------------
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-key')
 
 app.jinja_env.globals['SUPABASE_URL'] = os.environ.get('SUPABASE_URL', '')
