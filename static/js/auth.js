@@ -321,6 +321,89 @@
   // ============================================================================
 
   /**
+   * Handle OAuth callback from URL hash
+   */
+  async function handleOAuthCallback(client) {
+    if (!client) return false;
+
+    // Check if we have OAuth tokens in the URL hash
+    const hash = window.location.hash;
+    if (!hash || (!hash.includes('access_token') && !hash.includes('error'))) {
+      return false;
+    }
+
+    try {
+      console.log('[Auth] Processing OAuth callback...');
+      showStatus('Completing sign in...');
+      
+      // Check for error in hash
+      if (hash.includes('error=')) {
+        const errorMatch = hash.match(/error=([^&]+)/);
+        const error = errorMatch ? decodeURIComponent(errorMatch[1]) : 'Authentication failed';
+        console.error('[Auth] OAuth error:', error);
+        showStatus(`Authentication failed: ${error}`, true);
+        // Clear the hash
+        window.history.replaceState(null, '', window.location.pathname);
+        return false;
+      }
+
+      // Supabase automatically parses the hash when getSession() is called
+      // Wait a bit for Supabase to process the hash
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { data, error } = await client.auth.getSession();
+      
+      if (error) {
+        console.error('[Auth] OAuth callback error:', error);
+        showStatus('Authentication failed. Please try again.', true);
+        // Clear the hash
+        window.history.replaceState(null, '', window.location.pathname);
+        return false;
+      }
+
+      const session = data?.session;
+      if (session) {
+        console.log('[Auth] OAuth callback successful');
+        await persistSession(session);
+        
+        // Clear the hash from URL
+        window.history.replaceState(null, '', window.location.pathname);
+        
+        // Redirect to dashboard
+        showStatus('Sign in successful. Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
+        return true;
+      }
+
+      // If no session but hash exists, wait a bit more and try again
+      if (hash.includes('access_token')) {
+        console.log('[Auth] Waiting for session to be established...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const retryData = await client.auth.getSession();
+        if (retryData?.data?.session) {
+          await persistSession(retryData.data.session);
+          window.history.replaceState(null, '', window.location.pathname);
+          showStatus('Sign in successful. Redirecting...');
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 500);
+          return true;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      console.error('[Auth] OAuth callback processing error:', error);
+      showStatus('Authentication error. Please try again.', true);
+      // Clear the hash
+      window.history.replaceState(null, '', window.location.pathname);
+      return false;
+    }
+  }
+
+  /**
    * Initialize authentication module
    */
   async function initAuth() {
@@ -337,6 +420,12 @@
     const client = await initSupabaseClient();
     if (!client) {
       return;
+    }
+
+    // Handle OAuth callback first (if tokens are in URL hash)
+    const isOAuthCallback = await handleOAuthCallback(client);
+    if (isOAuthCallback) {
+      return; // OAuth callback handled, don't continue with normal flow
     }
 
     // Check for existing session
