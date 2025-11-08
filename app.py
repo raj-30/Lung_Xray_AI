@@ -2,7 +2,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, jsonify, redirect, make_response
-from gevent.pywsgi import WSGIServer
 import requests
 import numpy as np
 from util import base64_to_pil
