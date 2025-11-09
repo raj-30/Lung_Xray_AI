@@ -1,6 +1,10 @@
 ﻿import os
 from pathlib import Path
 from dotenv import load_dotenv
+
+# Suppress TensorFlow warnings (set before importing TensorFlow)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=info, 2=warnings, 3=errors only
+
 from flask import Flask, request, render_template, jsonify, redirect, make_response
 import requests
 import numpy as np
@@ -201,4 +205,5 @@ def gemini_proxy():
 # Run Flask app
 # -------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(port=5002, debug=True, threaded=True)
+    port = int(os.environ.get('PORT', 5002))
+    app.run(port=port, debug=True, threaded=True)

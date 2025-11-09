@@ -89,7 +89,7 @@ endblock %} {% block head %}
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    height: 54px;
     gap: 32px;
   }
 
@@ -110,17 +110,17 @@ endblock %} {% block head %}
   }
 
   .brand .logo {
-    width: 40px;
-    height: 40px;
+    width: 54px;
+    height: 54px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--ant-gradient);
-    color: white;
+    /* background: var(--ant-gradient); */
+    /* color: white; */
     font-weight: 700;
     font-size: 16px;
-    box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2);
+    /* box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2); */
     transition: var(--ant-transition);
   }
 
@@ -419,8 +419,8 @@ endblock %} {% block head %}
     }
 
     .brand .logo {
-      width: 36px;
-      height: 36px;
+      width: 60px;
+      height: 60px;
       font-size: 14px;
     }
   }
@@ -1165,7 +1165,7 @@ endblock %} {% block head %}
     <div class="navbar-container">
       <!-- Left: Brand/Logo -->
       <a href="/" class="brand" aria-label="AI Pneumonia Detection">
-        <div class="logo">AI</div>
+         <img class="logo" src="static/img/logo.png" alt="AI Pneumonia Logo" />
         <div class="label">Pneumonia AI</div>
       </a>
 
