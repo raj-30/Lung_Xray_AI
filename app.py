@@ -27,12 +27,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-key')
 app.jinja_env.globals['SUPABASE_URL'] = os.environ.get('SUPABASE_URL', '')
 app.jinja_env.globals['SUPABASE_ANON_KEY'] = os.environ.get('SUPABASE_ANON_KEY', '')
 
-# -------------------------------------------------------------------
-# Load TensorFlow model (no graph/session required)
-# -------------------------------------------------------------------
-MODEL_PATH = 'models/oldModel.h5'
-model = load_model(MODEL_PATH)
-print('✅ Model loaded successfully (TF 2.x eager mode).')
+model = None  # Lazy-loaded
 
 # -------------------------------------------------------------------
 # Helper functions
@@ -42,6 +37,10 @@ def model_predict(img):
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x, mode='tf')
+    global model
+    if model is None:
+        model = load_model('models/oldModel.h5')
+        print('✅ Model loaded successfully (TF 2.x eager mode).')
     preds = model.predict(x)
     return preds
 
@@ -136,6 +135,7 @@ def predict():
         img.save(img_path)
 
         img = image.load_img(img_path, target_size=(64, 64))
+        # Model is loaded lazily inside model_predict
         preds = model_predict(img)
         result = preds[0, 0]
 
