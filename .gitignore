@@ -1,8 +1,13 @@
-# Environment variables
+# ============================
+# 🔐 Environment Variables
+# ============================
 .env
 .env.local
+*.env
 
-# Python
+# ============================
+# 🐍 Python / Flask
+# ============================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -11,31 +16,99 @@ __pycache__/
 venv/
 env/
 ENV/
-.venv
-
-# Flask
+.venv/
 instance/
 .webassets-cache
+*.db
+*.sqlite3
 
-# Uploads (user-uploaded files)
+# ============================
+# 📦 Dependencies & Build
+# ============================
+# pip / Python build
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Node / JS (if you ever build frontends here)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+*.lock
+
+# ============================
+# 📊 Model Files (Large binaries)
+# ============================
+# Comment out if you want to keep models in Git LFS instead
+# models/*.h5
+# models/*.hdf5
+# models/*.keras
+# models/*.pb
+# models/*.onnx
+# *.tflite
+# *.pkl
+# *.pt
+# *.ckpt
+# *.zip
+# *.tar.gz
+
+# ============================
+# 📂 User Uploads / Runtime
+# ============================
 uploads/*
 !uploads/readme.txt
+tmp/
+__cache__/
+.cache/
+.mypy_cache/
+pytest_cache/
 
-# IDE
+# ============================
+# 🧠 IDE / Editor Settings
+# ============================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.iml
 
-# OS
+# ============================
+# 💻 OS / System Files
+# ============================
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
-# Logs
+# ============================
+# 🧾 Logs
+# ============================
 *.log
+logs/
+nohup.out
 
-# Model files (optional - uncomment if you don't want to commit models)
-# models/*.h5
-# models/*.hdf5
+# ============================
+# ⚙️ Render / Deployment Cache
+# ============================
+.render-build/
+render.yaml
+__pycache__/
+*.pid
 
+# ============================
+# 🚫 Optional Extras
+# ============================
+# Ignore large datasets or notebooks
+data/
+notebooks/
+*.ipynb_checkpoints/
+
+# Ignore compiled bytecode
+*.pyo
+*.pyd
+*.bak

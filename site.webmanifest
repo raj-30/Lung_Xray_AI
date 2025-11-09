@@ -1,0 +1,64 @@
+{
+  "name": "AI Pneumonia Detection",
+  "short_name": "Pneumonia AI",
+  "description": "AI-powered pneumonia detection system that analyzes chest X-rays for early, accurate diagnosis — secure, fast, and built with Ant Design aesthetics.",
+  
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+
+  "background_color": "#f8fafc",
+  "theme_color": "#1677ff",
+
+  "icons": [
+    {
+      "src": "/static/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ],
+
+  "id": "ai-pneumonia-detection.web.app",
+  "lang": "en-US",
+  "dir": "ltr",
+
+  "categories": ["medical", "health", "ai", "machine learning", "diagnostic"],
+  
+  "shortcuts": [
+    {
+      "name": "Run Analysis",
+      "short_name": "Analyze",
+      "description": "Upload an X-ray to detect pneumonia using AI",
+      "url": "/dashboard#upload",
+      "icons": [{ "src": "/static/icons/bolt.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "View History",
+      "short_name": "History",
+      "description": "See your previous X-ray predictions",
+      "url": "/dashboard#history",
+      "icons": [{ "src": "/static/icons/history.png", "sizes": "96x96" }]
+    }
+  ],
+
+  "related_applications": [],
+  "prefer_related_applications": false
+}
